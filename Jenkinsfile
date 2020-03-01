@@ -24,6 +24,9 @@ pipeline {
             env.ACEX_COMMIT = acexGit.GIT_COMMIT
           }
 
+          // Store number of failed builds as global variable
+          powershell '((Get-Content -path tools/make.py -Raw) -replace \'    global missingFiles\', \'    global missingFiles\n    global failedBuilds\') | Set-Content -Path tools/make.py'
+
           // Set bad exit code on error
           powershell '((Get-Content -path tools/make.py -Raw) -replace \'sys.exit\\(0\\)\', \'sys.exit(len(failedBuilds))\') | Set-Content -Path tools/make.py'
         }
